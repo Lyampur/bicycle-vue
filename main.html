@@ -1,0 +1,309 @@
+ <!DOCTYPE html>
+ <html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Велосипед</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <div class="container pt-4" id='app'>
+    <div class="row mb-3">
+      <div class="col">
+          <h1>Велосипед мечты</h1>
+          <button
+              v-on:click="compare = !compare"
+              class="btn btn-outline-info ml-3 mb-3"
+          >
+              {{bikeCompareBtnText}}
+          </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div v-bind:class="{
+              'col-md-3': compare === false,
+              'col-md-12 mb-3': compare === true,
+            }">
+        <div class="form-group">
+          <label for="search">Поиск велосипеда</label>
+          <input
+              type="text"
+              class="form-control"
+              id="search"
+              placeholder="Название, модель"
+              v-model="search"
+          >
+        </div>
+        <hr>
+        <ul class="list-group" v-bind:class="{'list-group-horizontal': compare === true}">
+          <li
+              v-for="(bike, index) of filteredBikes"
+              class="list-group-item list-group-item-action pointer"
+              v-on:click.exact="selectBike(index)"
+              v-on:click.ctrl.exact="selectCompareBike(index)"
+              v-bind:class="{'list-group-item-info': selectedBikeIndex === index,
+                              'list-group-item-secondary': selectedCompareBikeIndex === index}"
+          >
+              {{bike.name}} {{bike.model}}
+          </li>
+        </ul>
+      </div>
+
+      <div v-bind:class="{
+              'col-md-9': compare === false,
+              'col-md-6': compare === true,
+            }">
+        <div class="row mb-3">
+          <div v-bind:class="{
+                  'col-md-6': compare === false,
+                  'col-md-12': compare === true,
+                }">
+            <h2>{{bike.name}}</h2>
+            <img v-bind:src="bike.image"
+                  v-bind:alt="bike.name+bike.model"
+                  class="rounded"
+                  v-bind:class="{'img-fluid': compare === false,
+                         'detailed-velo-image': compare === true,}">
+          </div>
+          <div v-bind:class="{
+                  'col-md-6': compare === false,
+                  'col-md-12': compare === true,
+                }">
+            <h5>Описание</h5>
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <th scope="row">Модель</th>
+                  <td>{{bike.model}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Рама</th>
+                  <td>{{bike.frame}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Вилка</th>
+                  <td>{{bike.fork}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Тормоза</th>
+                  <td>{{bike.brakes}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Переключатели</th>
+                  <td>{{bike.shifter}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Шины</th>
+                  <td>{{bike.tires}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Количество звезд</th>
+                  <td>{{bike.speed}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Вес</th>
+                  <td>{{bike.weight}} кг</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="phone-block">
+              <transition name="price">
+                <p v-if="priceVisibility">Цена: {{bike.price}}₽</p>
+              </transition>
+            </div>
+            <button
+                v-on:click="priceVisibility = !priceVisibility"
+                class="btn btn-outline-success"
+            >
+                {{priceBtnText}}
+            </button>
+            <button class="btn btn-primary" v-on:click="modalVisibility = true">На сайт</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Дубликат велосипеда при сравнении -->
+      <div class="col-md-6" v-if="compare">
+        <div class="row">
+          <div class="col-md-12">
+            <h2>{{bikeCompare.name}}</h2>
+            <img v-bind:src="bikeCompare.image"
+                  v-bind:alt="bikeCompare.name+bikeCompare.model"
+                  class="rounded"
+                  v-bind:class="{'img-fluid': compare === false,
+                         'detailed-velo-image': compare === true,}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h5>Описание</h5>
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <th scope="row">Модель</th>
+                  <td>{{bikeCompare.model}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Рама</th>
+                  <td>{{bikeCompare.frame}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Вилка</th>
+                  <td>{{bikeCompare.fork}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Тормоза</th>
+                  <td>{{bikeCompare.brakes}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Переключатели</th>
+                  <td>{{bikeCompare.shifter}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Шины</th>
+                  <td>{{bikeCompare.tires}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Количество звезд</th>
+                  <td>{{bikeCompare.speed}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Вес</th>
+                  <td>{{bikeCompare.weight}} кг</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="phone-block">
+              <transition name="price">
+                <p v-if="priceCompareVisibility">Цена: {{bikeCompare.price}}₽</p>
+              </transition>
+            </div>
+            <button
+                v-on:click="priceCompareVisibility = !priceCompareVisibility"
+                class="btn btn-outline-success"
+            >
+                {{priceCompareBtnText}}
+            </button>
+            <button class="btn btn-primary" v-on:click="modalCompareVisibility = true">На сайт</button>
+          </div>
+        </div>
+
+        <transition name="modal">
+          <div class="modal fade show" v-if="modalCompareVisibility" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Вы хотите перейти на сайт магазина?</h5>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    v-on:click="modalCompareVisibility = false"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <h2>{{bikeCompare.name}} {{bikeCompare.model}}</h2>
+              </div>
+              <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                    v-on:click="modalCompareVisibility = false"
+                >
+                    Нет
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    v-on:click="openCompareUrl"
+                >
+                    Да, хочу
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </transition>
+        <transition name="fade">
+          <div class="modal-backdrop fade show" v-if="modalCompareVisibility"></div>
+        </transition>
+
+      </div>
+
+    </div>
+
+    <div class="row mt-4" v-if="logs.length">
+      <div class="col-md-12">
+        <ul class="list-group">
+          <li
+              v-for="log of logs"
+              class="list-group-item"
+              v-bind:class="{
+                'list-group-item-danger': log.type === 'cnl',
+                'list-group-item-success': log.type === 'ok',
+              }"
+          >
+              {{log.text}} {{log.date | date}}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <transition name="modal">
+      <div class="modal fade show" v-if="modalVisibility" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Вы хотите перейти на сайт магазина?</h5>
+            <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                v-on:click="modalVisibility = false"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h2>{{bike.name}} {{bike.model}}</h2>
+          </div>
+          <div class="modal-footer">
+            <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+                v-on:click="modalVisibility = false"
+            >
+                Нет
+            </button>
+            <button
+                type="button"
+                class="btn btn-primary"
+                v-on:click="openUrl"
+            >
+                Да, хочу
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </transition>
+    <transition name="fade">
+      <div class="modal-backdrop fade show" v-if="modalVisibility"></div>
+    </transition>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

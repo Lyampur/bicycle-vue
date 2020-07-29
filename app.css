@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:400,500,600,700&display=swap&subset=cyrillic');
+
+body {
+  font-family: 'Comfortaa', cursive;
+}
+
+strong {
+  font-family: 'Comfortaa:700', cursive;
+}
+
+h1 {
+  margin: auto;
+  display: inline-block;
+}
+
+.detailed-velo-image{
+  height: 350px;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.phone-block{
+  height: 36px;
+}
+
+.modal{
+  display: block;
+}
+
+/*Animations*/
+
+.price-enter-active, .price-leave-active {
+  transition: all .5s;
+}
+
+.price-enter, .price-leave-to {
+  transform: translateX(50px);
+  opacity: 0;
+}
+
+.modal-enter-active, .modal-leave-active {
+  transition: all .5s;
+}
+
+.modal-enter, .modal-leave-to {
+  transform: translateY(-100px);
+}
+
+.fade-enter-active {
+  animation: .75s fade forwards;
+}
+
+.fade-leave-active {
+  animation: .75s fade reverse;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity^ .5;
+  }
+}
